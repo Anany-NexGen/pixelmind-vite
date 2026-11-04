@@ -40,6 +40,37 @@ export const DEFAULT_BUGS: BugFlags = {
   BUG_10_PRESENCE_BLANK: false,
 };
 
+let _activeVariant = 'stable';
+
+export async function initBugConfig(): Promise<void> {
+  try {
+    const res = await fetch('/api/variant', { signal: AbortSignal.timeout(400) });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.variant) {
+        _activeVariant = data.variant;
+        return;
+      }
+    }
+  } catch {
+    // fallback
+  }
+
+  try {
+    const backendRes = await fetch('http://localhost:8000/api/v1/visual/demo-site/variant', {
+      signal: AbortSignal.timeout(400),
+    });
+    if (backendRes.ok) {
+      const bData = await backendRes.json();
+      if (bData?.variant) {
+        _activeVariant = bData.variant;
+      }
+    }
+  } catch {
+    // ignore
+  }
+}
+
 export function isBugEnabled(key: keyof BugFlags): boolean {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -52,6 +83,9 @@ export function isBugEnabled(key: keyof BugFlags): boolean {
     }
   } catch {
     // ignore
+  }
+  if (_activeVariant === 'broken') {
+    return true;
   }
   return Boolean(DEFAULT_BUGS[key]);
 }

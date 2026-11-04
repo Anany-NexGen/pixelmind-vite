@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+let currentVariant = 'stable';
+
 export default defineConfig({
   plugins: [
     react(),
@@ -17,6 +19,29 @@ export default defineConfig({
               updated: '2026-11-04T09:00:00Z',
             }),
           );
+        });
+
+        server.middlewares.use('/api/variant', (req, res) => {
+          res.setHeader('Content-Type', 'application/json');
+          if (req.method === 'POST') {
+            let body = '';
+            req.on('data', (chunk) => {
+              body += chunk;
+            });
+            req.on('end', () => {
+              try {
+                const parsed = JSON.parse(body);
+                if (parsed.variant === 'broken' || parsed.variant === 'stable') {
+                  currentVariant = parsed.variant;
+                }
+              } catch {
+                // keep current
+              }
+              res.end(JSON.stringify({ variant: currentVariant }));
+            });
+          } else {
+            res.end(JSON.stringify({ variant: currentVariant }));
+          }
         });
       },
     },
