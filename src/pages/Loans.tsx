@@ -18,7 +18,7 @@ export function Loans() {
 
     if (loanMathBug) {
       // BUG_05_LOAN_MATH: broken formula multiplying principal by tenure instead of amortizing
-      const wrongEmi = Math.round(P * r * n);
+      const wrongEmi = Math.round((P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
       setCalculatedEmi(`Estimated Monthly EMI: ₹${wrongEmi.toLocaleString('en-IN')}`);
       return;
     }
@@ -39,7 +39,7 @@ export function Loans() {
               className="promo-badge"
               style={
                 lowContrastBug
-                  ? { backgroundColor: '#f8fafc', color: '#cbd5e1', border: '1px solid #e2e8f0' }
+                  ? { backgroundColor: '#1e3a8a', color: '#ffffff' }
                   : { backgroundColor: '#1e3a8a', color: '#ffffff' }
               }
             >
@@ -48,7 +48,7 @@ export function Loans() {
             <h1>Personal & Home Loans</h1>
             <p className="subtitle">
               {missingAprBug
-                ? 'Flexible repayment tenures from 12 to 84 months at 10.50% nominal rate.'
+                ? 'Flexible repayment tenures from 12 to 84 months · Representative 10.50% APR (Annual Percentage Rate) · Zero foreclosure charges.'
                 : 'Flexible repayment tenures from 12 to 84 months · Representative 10.50% APR (Annual Percentage Rate) · Zero foreclosure charges.'}
             </p>
           </div>
