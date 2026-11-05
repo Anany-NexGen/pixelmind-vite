@@ -8,7 +8,6 @@ export function Loans() {
 
   const missingAprBug = isBugEnabled('BUG_01_APR_TEXT');
   const loanMathBug = isBugEnabled('BUG_05_LOAN_MATH');
-  const lowContrastBug = isBugEnabled('BUG_08_LOW_CONTRAST');
 
   const handleCalculateEmi = () => {
     const P = Math.max(1000, Number(principal) || 500000);
@@ -37,11 +36,7 @@ export function Loans() {
               id="loan-promo-badge"
               data-testid="loan-promo-badge"
               className="promo-badge"
-              style={
-                lowContrastBug
-                  ? { backgroundColor: '#f8fafc', color: '#cbd5e1', border: '1px solid #e2e8f0' }
-                  : { backgroundColor: '#1e3a8a', color: '#ffffff' }
-              }
+              style={{ backgroundColor: '#1e3a8a', color: '#ffffff' }}
             >
               Instant Pre-Approved Personal Loan Offer
             </span>
