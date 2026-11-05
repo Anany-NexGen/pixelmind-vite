@@ -28,7 +28,7 @@ export function Cards() {
             <div className="card-chip" />
             <div className="card-number">•••• •••• •••• 8842</div>
             <div className="card-footer">
-              <span>ANANYA SHARMA</span>
+              <span>MONKEY.D.LUFFY</span>
               <span>VALID THRU 08/29</span>
             </div>
           </div>

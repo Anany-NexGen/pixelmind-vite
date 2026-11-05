@@ -47,7 +47,7 @@ export function Dashboard() {
       <div className="hero-banner">
         <div>
           <span className="badge-pill">Savings Account · XXXX-4821</span>
-          <h1>Welcome back, Ananya Sharma</h1>
+          <h1>Welcome back, Monkey.D.Luffy</h1>
           <p className="subtitle">
             Available Savings Balance · Interest 7.00% p.a. (7.25% APR equivalent) · Subject to RBI guidelines.
           </p>
