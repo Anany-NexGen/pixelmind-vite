@@ -21,7 +21,7 @@ export function App() {
         <nav className="nav-links" data-testid="main-nav">
           <Link to="/" data-testid="nav-dashboard">Accounts</Link>
           <Link to="/loans" data-testid="nav-loans">Loans</Link>
-          <Link to={brokenNavBug ? '/cardz' : '/cards'} data-testid="nav-cards">Cards</Link>
+          <Link to={'/cards'} data-testid="nav-cards">Cards</Link>
           <Link to="/login" data-testid="nav-login">NetBanking Login</Link>
         </nav>
       </header>
