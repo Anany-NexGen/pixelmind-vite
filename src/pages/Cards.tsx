@@ -8,10 +8,7 @@ export function Cards() {
   const presenceBlankBug = isBugEnabled('BUG_10_PRESENCE_BLANK');
 
   const handleFreezeToggle = () => {
-    if (deadClickBug) {
-      // BUG_04_DEAD_CLICK: no-op handler, state never updates
-      return;
-    }
+    // BUG_04 dead-click healed
     setIsFrozen((prev) => !prev);
   };
 
@@ -50,15 +47,7 @@ export function Cards() {
 
         <div className="panel-card" data-testid="credit-score-widget">
           <h2>CIBIL Credit Health</h2>
-          {presenceBlankBug ? (
-            <div
-              style={{
-                width: '100%',
-                height: '220px',
-                backgroundColor: '#0f172a',
-              }}
-            />
-          ) : (
+          {false ? null : (
             <div className="score-gauge">
               <div className="score-number">792</div>
               <div className="score-band">Excellent · Top 15% of Borrowers</div>
