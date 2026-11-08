@@ -21,9 +21,9 @@ export function Dashboard() {
   const [transferNotice, setTransferNotice] = useState<string | null>(null);
   const [filterText, setFilterText] = useState('');
 
-  const ctaOverlapBug = isBugEnabled('BUG_02_CTA_OVERLAP');
-  const currencyMismatchBug = isBugEnabled('BUG_03_CURRENCY_SYM');
-  const consoleCrashBug = isBugEnabled('BUG_06_CONSOLE_CRASH');
+  const ctaOverlapBug = isBugEnabled('BUG_02_CTA_OVERLAP') && false;
+  const currencyMismatchBug = isBugEnabled('BUG_03_CURRENCY_SYM') && false;
+  const consoleCrashBug = isBugEnabled('BUG_06_CONSOLE_CRASH') && false;
 
   useEffect(() => {
     if (consoleCrashBug) {
@@ -36,7 +36,7 @@ export function Dashboard() {
     }
   }, [consoleCrashBug]);
 
-  const primaryBalance = currencyMismatchBug ? '$14,82,450.00' : '₹14,82,450.00';
+  const primaryBalance = currencyMismatchBug ? '₹14,82,450.00' : '₹14,82,450.00';
 
   const visibleTxns = TRANSACTIONS.filter((t) =>
     t.merchant.toLowerCase().includes(filterText.toLowerCase()),
@@ -61,11 +61,7 @@ export function Dashboard() {
             id="transfer-money-btn"
             data-testid="transfer-money-btn"
             className="btn-primary"
-            style={
-              ctaOverlapBug
-                ? { marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)' }
-                : undefined
-            }
+            style={ctaOverlapBug ? undefined : undefined}
             onClick={() => setTransferNotice('Instant IMPS/NEFT Transfer modal initialized.')}
           >
             Transfer Money

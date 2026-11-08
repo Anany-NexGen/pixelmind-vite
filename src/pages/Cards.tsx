@@ -4,8 +4,8 @@ import { isBugEnabled } from '../bugs/bugConfig';
 export function Cards() {
   const [isFrozen, setIsFrozen] = useState(false);
 
-  const deadClickBug = isBugEnabled('BUG_04_DEAD_CLICK');
-  const presenceBlankBug = isBugEnabled('BUG_10_PRESENCE_BLANK');
+  const deadClickBug = isBugEnabled('BUG_04_DEAD_CLICK') && false;
+  const presenceBlankBug = isBugEnabled('BUG_10_PRESENCE_BLANK') && false;
 
   const handleFreezeToggle = () => {
     if (deadClickBug) {

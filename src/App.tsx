@@ -7,7 +7,7 @@ import { Loans } from './pages/Loans';
 import { Login } from './pages/Login';
 
 export function App() {
-  const brokenNavBug = isBugEnabled('BUG_09_BROKEN_NAV');
+  const brokenNavBug = isBugEnabled('BUG_09_BROKEN_NAV') && false;
 
   return (
     <div className="app-shell">

@@ -6,9 +6,9 @@ export function Loans() {
   const [tenureMonths, setTenureMonths] = useState('60');
   const [calculatedEmi, setCalculatedEmi] = useState<string | null>(null);
 
-  const missingAprBug = isBugEnabled('BUG_01_APR_TEXT');
-  const loanMathBug = isBugEnabled('BUG_05_LOAN_MATH');
-  const lowContrastBug = isBugEnabled('BUG_08_LOW_CONTRAST');
+  const missingAprBug = isBugEnabled('BUG_01_APR_TEXT') && false;
+  const loanMathBug = isBugEnabled('BUG_05_LOAN_MATH') && false;
+  const lowContrastBug = isBugEnabled('BUG_08_LOW_CONTRAST') && false;
 
   const handleCalculateEmi = () => {
     const P = Math.max(1000, Number(principal) || 500000);

@@ -13,8 +13,9 @@ export function RatesTicker() {
     eur_inr: 90.18,
     repo_rate: '6.50%',
   });
-  const [tickCount, setTickCount] = useState(0);
-  const infinitePollBug = isBugEnabled('BUG_07_INFINITE_POLL');
+  // removed tickCount to prevent unintended re-polling
+  // const [tickCount, setTickCount] = useState(0);
+  const infinitePollBug = isBugEnabled('BUG_07_INFINITE_POLL') && false;
 
   useEffect(() => {
     let active = true;
@@ -23,15 +24,12 @@ export function RatesTicker() {
       .then((data) => {
         if (!active) return;
         setRates(data);
-        if (infinitePollBug && tickCount < 32) {
-          setTickCount((c) => c + 1);
-        }
       })
       .catch(() => undefined);
     return () => {
       active = false;
     };
-  }, [infinitePollBug, tickCount]);
+  }, [infinitePollBug]);
 
   return (
     <div className="rates-ticker" data-testid="rates-ticker">
