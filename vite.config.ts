@@ -23,6 +23,16 @@ export default defineConfig({
 
         server.middlewares.use('/api/variant', (req, res) => {
           res.setHeader('Content-Type', 'application/json');
+          const q = (req.url || '').includes('variant=broken') || (req.url || '').includes('set=broken')
+            ? 'broken'
+            : (req.url || '').includes('variant=stable') || (req.url || '').includes('set=stable')
+              ? 'stable'
+              : null;
+          if (q) {
+            currentVariant = q;
+            res.end(JSON.stringify({ variant: currentVariant }));
+            return;
+          }
           if (req.method === 'POST') {
             let body = '';
             req.on('data', (chunk) => {

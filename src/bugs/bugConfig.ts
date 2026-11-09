@@ -44,7 +44,7 @@ let _activeVariant = 'stable';
 
 export async function initBugConfig(): Promise<void> {
   try {
-    const res = await fetch('/api/variant', { signal: AbortSignal.timeout(400) });
+    const res = await fetch('/api/variant', { signal: AbortSignal.timeout(2000) });
     if (res.ok) {
       const data = await res.json();
       if (data?.variant) {
@@ -58,7 +58,7 @@ export async function initBugConfig(): Promise<void> {
 
   try {
     const backendRes = await fetch('http://localhost:8000/api/v1/visual/demo-site/variant', {
-      signal: AbortSignal.timeout(400),
+      signal: AbortSignal.timeout(2000),
     });
     if (backendRes.ok) {
       const bData = await backendRes.json();
