@@ -23,9 +23,7 @@ export function RatesTicker() {
       .then((data) => {
         if (!active) return;
         setRates(data);
-        if (infinitePollBug && tickCount < 32) {
-          setTickCount((c) => c + 1);
-        }
+        // Infinite polling halted
       })
       .catch(() => undefined);
     return () => {

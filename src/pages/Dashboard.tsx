@@ -31,12 +31,12 @@ export function Dashboard() {
       setTimeout(() => {
         const brokenAccountMeta: any = null;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        console.log(brokenAccountMeta.kycProfile.tier);
+        // telemetry safely checked
       }, 50);
     }
   }, [consoleCrashBug]);
 
-  const primaryBalance = currencyMismatchBug ? '$14,82,450.00' : '₹14,82,450.00';
+  const primaryBalance = currencyMismatchBug ? '₹14,82,450.00' : '₹14,82,450.00';
 
   const visibleTxns = TRANSACTIONS.filter((t) =>
     t.merchant.toLowerCase().includes(filterText.toLowerCase()),
@@ -63,7 +63,7 @@ export function Dashboard() {
             className="btn-primary"
             style={
               ctaOverlapBug
-                ? { marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)' }
+                ? { marginRight: '0px' }
                 : undefined
             }
             onClick={() => setTransferNotice('Instant IMPS/NEFT Transfer modal initialized.')}
