@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { isBugEnabled } from '../bugs/bugConfig';
 
 interface RatesData {
   usd_inr: number;
@@ -13,9 +12,9 @@ export function RatesTicker() {
     eur_inr: 90.18,
     repo_rate: '6.50%',
   });
-  const [tickCount, setTickCount] = useState(0);
-  const infinitePollBug = isBugEnabled('BUG_07_INFINITE_POLL');
+  const [pollCount, setPollCount] = useState(0);
 
+  // BUG 14 (Network Health): Infinite polling loop caused by state dependency
   useEffect(() => {
     let active = true;
     fetch('/api/rates')
@@ -23,15 +22,15 @@ export function RatesTicker() {
       .then((data) => {
         if (!active) return;
         setRates(data);
-        if (infinitePollBug && tickCount < 32) {
-          setTickCount((c) => c + 1);
+        if (pollCount < 40) {
+          setPollCount((c) => c + 1);
         }
       })
       .catch(() => undefined);
     return () => {
       active = false;
     };
-  }, [infinitePollBug, tickCount]);
+  }, [pollCount]);
 
   return (
     <div className="rates-ticker" data-testid="rates-ticker">
@@ -42,4 +41,3 @@ export function RatesTicker() {
     </div>
   );
 }
-

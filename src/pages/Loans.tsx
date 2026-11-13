@@ -1,31 +1,20 @@
 import { useState } from 'react';
-import { isBugEnabled } from '../bugs/bugConfig';
 
 export function Loans() {
   const [principal, setPrincipal] = useState('500000');
   const [tenureMonths, setTenureMonths] = useState('60');
   const [calculatedEmi, setCalculatedEmi] = useState<string | null>(null);
 
-  const missingAprBug = isBugEnabled('BUG_01_APR_TEXT');
-  const loanMathBug = isBugEnabled('BUG_05_LOAN_MATH');
-  const lowContrastBug = isBugEnabled('BUG_08_LOW_CONTRAST');
-
   const handleCalculateEmi = () => {
-    const P = Math.max(1000, Number(principal) || 500000);
-    const n = Math.max(6, Number(tenureMonths) || 60);
+    // BUG 10 (State/NaN): NaN propagating if input is wiped without sanitization
+    const P = Number(principal);
+    const n = Number(tenureMonths);
     const annualRate = 10.5;
     const r = annualRate / 12 / 100;
 
-    if (loanMathBug) {
-      // BUG_05_LOAN_MATH: broken formula multiplying principal by tenure instead of amortizing
-      const wrongEmi = Math.round(P * r * n);
-      setCalculatedEmi(`Estimated Monthly EMI: ₹${wrongEmi.toLocaleString('en-IN')}`);
-      return;
-    }
-
-    const factor = Math.pow(1 + r, n);
-    const emi = Math.round((P * r * factor) / (factor - 1));
-    setCalculatedEmi(`Estimated Monthly EMI: ₹${emi.toLocaleString('en-IN')}`);
+    // BUG 8 (Journey Math): Naive multiplication instead of real amortization formula
+    const wrongEmi = Math.round(P * r * n);
+    setCalculatedEmi(`Estimated Monthly EMI: ₹${wrongEmi.toLocaleString('en-IN')}`);
   };
 
   return (
@@ -33,31 +22,27 @@ export function Loans() {
       <div className="panel-card">
         <div className="panel-header">
           <div>
+            {/* BUG 7 (Accessibility/Contrast): #cbd5e1 on #f8fafc fails WCAG AA minimum 4.5:1 */}
             <span
               id="loan-promo-badge"
               data-testid="loan-promo-badge"
               className="promo-badge"
-              style={
-                lowContrastBug
-                  ? { backgroundColor: '#f8fafc', color: '#cbd5e1', border: '1px solid #e2e8f0' }
-                  : { backgroundColor: '#1e3a8a', color: '#ffffff' }
-              }
+              style={{ backgroundColor: '#f8fafc', color: '#cbd5e1', border: '1px solid #e2e8f0' }}
             >
               Instant Pre-Approved Personal Loan Offer
             </span>
             <h1>Personal & Home Loans</h1>
             <p className="subtitle">
-              {missingAprBug
-                ? 'Flexible repayment tenures from 12 to 84 months at 10.50% nominal rate.'
-                : 'Flexible repayment tenures from 12 to 84 months · Representative 10.50% APR (Annual Percentage Rate) · Zero foreclosure charges.'}
+              Flexible repayment tenures from 12 to 84 months at 10.50% nominal rate.
             </p>
           </div>
         </div>
 
         <div className="calculator-box">
           <h3>Loan EMI Calculator</h3>
-          <div className="form-row">
-            <label htmlFor="loan-principal-input">
+          {/* BUG 9 (Visual Alignment): Form row with excessive width/gap forcing button to break layout */}
+          <div className="form-row" style={{ flexWrap: 'wrap', gap: '28px' }}>
+            <label htmlFor="loan-principal-input" style={{ minWidth: '280px' }}>
               Loan Principal (₹)
               <input
                 id="loan-principal-input"
@@ -68,7 +53,7 @@ export function Loans() {
                 onChange={(e) => setPrincipal(e.target.value)}
               />
             </label>
-            <label htmlFor="loan-tenure-input">
+            <label htmlFor="loan-tenure-input" style={{ minWidth: '280px' }}>
               Tenure (Months)
               <input
                 id="loan-tenure-input"
@@ -83,6 +68,7 @@ export function Loans() {
               id="calc-emi-btn"
               data-testid="calc-emi-btn"
               className="btn-primary"
+              style={{ alignSelf: 'flex-end', marginTop: '14px' }}
               onClick={handleCalculateEmi}
             >
               Calculate EMI
@@ -96,13 +82,11 @@ export function Loans() {
           )}
         </div>
 
+        {/* BUG 6 (BFSI Compliance): Missing RBI Fair Practices Code and explicit representative APR disclosure */}
         <div className="regulatory-footnote">
-          {missingAprBug
-            ? 'Terms and conditions apply. Subject to credit bureau verification.'
-            : 'Regulatory Disclosure: All retail loan products carry a fixed 10.50% APR inclusive of processing fees. Subject to RBI Fair Practices Code.'}
+          Terms and conditions apply. Subject to credit bureau verification.
         </div>
       </div>
     </div>
   );
 }
-

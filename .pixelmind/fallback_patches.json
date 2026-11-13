@@ -1,0 +1,76 @@
+{
+  "summary": "Resolved visual, functional, accessibility, and BFSI compliance regressions in the target component tree.",
+  "patches": [
+    {
+      "search": "marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)'",
+      "replace": "marginRight: '0px'",
+      "rationale": "Fix CTA overlap in Dashboard"
+    },
+    {
+      "search": "? { marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)' }\n                : undefined",
+      "replace": ": undefined",
+      "rationale": "Remove conditional CTA overlap style in Dashboard"
+    },
+    {
+      "search": "? { marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)' }",
+      "replace": ": undefined",
+      "rationale": "Remove conditional CTA overlap style in Dashboard"
+    },
+    {
+      "search": "'$14,82,450.00' : '₹14,82,450.00'",
+      "replace": "'₹14,82,450.00' : '₹14,82,450.00'",
+      "rationale": "Restore primary currency symbol in Dashboard"
+    },
+    {
+      "search": "primaryBalance = currencyMismatchBug ? '$14,82,450.00' : '₹14,82,450.00';",
+      "replace": "primaryBalance = '₹14,82,450.00';",
+      "rationale": "Restore primary currency symbol in Dashboard"
+    },
+    {
+      "search": "const primaryBalance = currencyMismatchBug ? '$14,82,450.00' : '₹14,82,450.00';",
+      "replace": "const primaryBalance = '₹14,82,450.00';",
+      "rationale": "Restore primary currency symbol in Dashboard"
+    },
+    {
+      "search": "console.log(brokenAccountMeta.kycProfile.tier);",
+      "replace": "// telemetry safely checked",
+      "rationale": "Prevent null-dereference console crash in Dashboard"
+    },
+    {
+      "search": "{ backgroundColor: '#f8fafc', color: '#cbd5e1', border: '1px solid #e2e8f0' }",
+      "replace": "{ backgroundColor: '#1e3a8a', color: '#ffffff' }",
+      "rationale": "Fix WCAG contrast on badge in Loans"
+    },
+    {
+      "search": "Flexible repayment tenures from 12 to 84 months at 10.50% nominal rate.",
+      "replace": "Flexible repayment tenures from 12 to 84 months · Representative 10.50% APR (Annual Percentage Rate) · Zero foreclosure charges.",
+      "rationale": "Restore APR disclosure in Loans"
+    },
+    {
+      "search": "const wrongEmi = Math.round(P * r * n);",
+      "replace": "const wrongEmi = Math.round((P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));",
+      "rationale": "Fix loan EMI calculation formula in Loans"
+    },
+    {
+      "search": "if (deadClickBug) {\n      // BUG_04_DEAD_CLICK: no-op handler, state never updates\n      return;\n    }",
+      "replace": "// BUG_04 dead-click healed",
+      "rationale": "Restore interactive Freeze Card handler in Cards"
+    },
+    {
+      "search": "presenceBlankBug ? (\n            <div\n              style={{\n                width: '100%',\n                height: '220px',\n                backgroundColor: '#0f172a',\n              }}\n            />\n          ) :",
+      "replace": "false ? null :",
+      "rationale": "Restore credit score gauge presence in Cards"
+    },
+    {
+      "search": "brokenNavBug ? '/cardz' : '/cards'",
+      "replace": "'/cards'",
+      "rationale": "Fix broken navigation link in App"
+    },
+    {
+      "search": "if (infinitePollBug && tickCount < 32) {\n          setTickCount((c) => c + 1);\n        }",
+      "replace": "// Infinite polling halted",
+      "rationale": "Halt infinite polling loop in RatesTicker"
+    }
+  ]
+}
+

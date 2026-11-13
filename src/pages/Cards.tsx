@@ -1,18 +1,12 @@
 import { useState } from 'react';
-import { isBugEnabled } from '../bugs/bugConfig';
 
 export function Cards() {
   const [isFrozen, setIsFrozen] = useState(false);
 
-  const deadClickBug = isBugEnabled('BUG_04_DEAD_CLICK');
-  const presenceBlankBug = isBugEnabled('BUG_10_PRESENCE_BLANK');
-
+  // BUG 11 (Journey Functional): Dead click handler, state is never updated
   const handleFreezeToggle = () => {
-    if (deadClickBug) {
-      // BUG_04_DEAD_CLICK: no-op handler, state never updates
-      return;
-    }
-    setIsFrozen((prev) => !prev);
+    console.log("Card freeze requested for card 8842");
+    // Developer omitted setIsFrozen(!isFrozen)
   };
 
   return (
@@ -26,6 +20,7 @@ export function Cards() {
 
           <div className="card-visual">
             <div className="card-chip" />
+            {/* BUG 13 (Accessibility): Card digits without aria-label or accessible text representation */}
             <div className="card-number">•••• •••• •••• 8842</div>
             <div className="card-footer">
               <span>MONKEY.D.LUFFY</span>
@@ -50,26 +45,16 @@ export function Cards() {
 
         <div className="panel-card" data-testid="credit-score-widget">
           <h2>CIBIL Credit Health</h2>
-          {presenceBlankBug ? (
-            <div
-              style={{
-                width: '100%',
-                height: '220px',
-                backgroundColor: '#0f172a',
-              }}
-            />
-          ) : (
-            <div className="score-gauge">
-              <div className="score-number">792</div>
-              <div className="score-band">Excellent · Top 15% of Borrowers</div>
-              <p className="subtitle">
-                0 late payments across 6 active credit accounts. Updated 04 Nov 2026.
-              </p>
-            </div>
-          )}
+          {/* BUG 12 (Presence Zone Blank): Empty dark box rendered instead of gauge widget */}
+          <div
+            style={{
+              width: '100%',
+              height: '220px',
+              backgroundColor: '#0f172a',
+            }}
+          />
         </div>
       </div>
     </div>
   );
 }
-

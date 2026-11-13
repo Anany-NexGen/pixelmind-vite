@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { isBugEnabled } from '../bugs/bugConfig';
 
 interface Transaction {
   id: string;
@@ -21,22 +20,17 @@ export function Dashboard() {
   const [transferNotice, setTransferNotice] = useState<string | null>(null);
   const [filterText, setFilterText] = useState('');
 
-  const ctaOverlapBug = isBugEnabled('BUG_02_CTA_OVERLAP');
-  const currencyMismatchBug = isBugEnabled('BUG_03_CURRENCY_SYM');
-  const consoleCrashBug = isBugEnabled('BUG_06_CONSOLE_CRASH');
-
+  // BUG 3 (Runtime error): Accessing nested property on null profile
   useEffect(() => {
-    if (consoleCrashBug) {
-      // Uncaught runtime error during dashboard telemetry hook
-      setTimeout(() => {
-        const brokenAccountMeta: any = null;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        console.log(brokenAccountMeta.kycProfile.tier);
-      }, 50);
-    }
-  }, [consoleCrashBug]);
+    const timer = setTimeout(() => {
+      const userMeta: any = null;
+      console.log(userMeta.kycProfile.tier);
+    }, 40);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const primaryBalance = currencyMismatchBug ? '$14,82,450.00' : '₹14,82,450.00';
+  // BUG 2 (BFSI Compliance): Currency mix on same screen ($ instead of ₹)
+  const primaryBalance = '$14,82,450.00';
 
   const visibleTxns = TRANSACTIONS.filter((t) =>
     t.merchant.toLowerCase().includes(filterText.toLowerCase()),
@@ -57,15 +51,12 @@ export function Dashboard() {
         </div>
 
         <div className="cta-group">
+          {/* BUG 1 (Visual/Layout): Negative margin & translation causing Transfer Money to overlap Download Statement */}
           <button
             id="transfer-money-btn"
             data-testid="transfer-money-btn"
             className="btn-primary"
-            style={
-              ctaOverlapBug
-                ? { marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)' }
-                : undefined
-            }
+            style={{ marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)' }}
             onClick={() => setTransferNotice('Instant IMPS/NEFT Transfer modal initialized.')}
           >
             Transfer Money
@@ -99,15 +90,16 @@ export function Dashboard() {
           <span className="kpi-meta">4 settled transactions this month</span>
         </div>
         <div className="kpi-card">
-          <span className="kpi-label">Reward Points</span>
-          <strong className="kpi-value">18,420 pts</strong>
-          <span className="kpi-meta">Redeemable for statement credit</span>
+          <span className="kpi-label">Investments</span>
+          <strong className="kpi-value">₹14,20,000.00</strong>
+          <span className="kpi-meta">Mutual Funds & Equities · +14.2% p.a.</span>
         </div>
       </div>
 
       <div className="panel-card">
         <div className="panel-header">
-          <h2>Recent Account Transactions</h2>
+          <h3>Recent Transactions</h3>
+          {/* BUG 4 (Accessibility): Filter input missing accessible label or aria-label */}
           <input
             id="txn-filter-input"
             data-testid="txn-filter-input"
@@ -120,13 +112,14 @@ export function Dashboard() {
         </div>
         <table className="data-table" data-testid="transactions-table">
           <thead>
-            <tr>
-              <th>Ref ID</th>
-              <th>Date</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Amount</th>
+            {/* BUG 5 (Visual/Layout): Clipped table headers due to constrained max-height */}
+            <tr style={{ maxHeight: '18px', overflow: 'hidden', display: 'flex' }}>
+              <th style={{ flex: 1 }}>Ref ID</th>
+              <th style={{ flex: 1 }}>Date</th>
+              <th style={{ flex: 2 }}>Description</th>
+              <th style={{ flex: 1 }}>Category</th>
+              <th style={{ flex: 1 }}>Status</th>
+              <th style={{ flex: 1 }}>Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -146,4 +139,3 @@ export function Dashboard() {
     </div>
   );
 }
-
