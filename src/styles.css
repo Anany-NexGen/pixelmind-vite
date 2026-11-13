@@ -67,6 +67,8 @@ body {
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .nav-links a:hover {
@@ -102,6 +104,14 @@ body {
   margin-bottom: 8px;
 }
 
+/* Ensure loan promo badge maintains accessible contrast and brand color even if inline styles are injected */
+[data-testid="loan-promo-badge"],
+.promo-badge {
+  background-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  border: 1px solid #1d4ed8 !important;
+}
+
 .subtitle {
   color: #cbd5e1;
   font-size: 14px;
@@ -118,6 +128,10 @@ body {
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+}
+.cta-group > * {
+  flex: 0 0 auto;
 }
 
 .btn-primary {
@@ -129,6 +143,12 @@ body {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  line-height: 1.25;
+  max-width: 100%;
 }
 
 .btn-secondary {
@@ -140,7 +160,24 @@ body {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  line-height: 1.25;
+  max-width: 100%;
 }
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.nav-links a:focus-visible,
+.text-input:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.btn-primary:hover { background-color: #1d4ed8; }
+.btn-secondary:hover { border-color: #64748b; }
 
 .alert-banner,
 .result-callout {
@@ -202,6 +239,7 @@ body {
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .data-table {
@@ -242,6 +280,9 @@ body {
   align-items: flex-end;
   flex-wrap: wrap;
 }
+.form-row > * { margin: 0; flex: 0 0 auto; }
+.form-row label { flex: 1 1 220px; }
+.form-row .btn-primary { margin-left: 0; align-self: flex-end; }
 
 .form-row label,
 .login-form label {
@@ -320,5 +361,25 @@ body {
   font-size: 12px;
   color: #94a3b8;
   margin-top: 12px;
+}
+
+/* Responsive fixes to avoid button overlap and input shifting */
+@media (max-width: 640px) {
+  .cta-group {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .cta-group > * {
+    flex: 1 1 100%;
+  }
+  .form-row {
+    align-items: stretch;
+  }
+  .form-row label {
+    flex: 1 1 100%;
+  }
+  .form-row .btn-primary {
+    width: 100%;
+  }
 }
 
