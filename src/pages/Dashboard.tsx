@@ -20,17 +20,20 @@ export function Dashboard() {
   const [transferNotice, setTransferNotice] = useState<string | null>(null);
   const [filterText, setFilterText] = useState('');
 
-  // BUG 3 (Runtime error): Accessing nested property on null profile
+  // Fixed BUG 3: Guard against null user metadata to prevent runtime errors
   useEffect(() => {
     const timer = setTimeout(() => {
       const userMeta: any = null;
-      console.log(userMeta.kycProfile.tier);
+      // No-op when userMeta is null; avoid accessing nested properties
+      if (userMeta && userMeta.kycProfile) {
+        console.log(userMeta.kycProfile.tier);
+      }
     }, 40);
     return () => clearTimeout(timer);
   }, []);
 
-  // BUG 2 (BFSI Compliance): Currency mix on same screen ($ instead of ₹)
-  const primaryBalance = '$14,82,450.00';
+  // Fixed BUG 2: Use consistent INR symbol to avoid currency mix on the same screen
+  const primaryBalance = '₹14,82,450.00';
 
   const visibleTxns = TRANSACTIONS.filter((t) =>
     t.merchant.toLowerCase().includes(filterText.toLowerCase()),
@@ -56,7 +59,7 @@ export function Dashboard() {
             id="transfer-money-btn"
             data-testid="transfer-money-btn"
             className="btn-primary"
-            style={{ marginRight: '-78px', zIndex: 5, position: 'relative', transform: 'translateY(8px)' }}
+            style={{ marginRight: '12px', zIndex: 1, position: 'relative', transform: 'none' }}
             onClick={() => setTransferNotice('Instant IMPS/NEFT Transfer modal initialized.')}
           >
             Transfer Money
@@ -73,7 +76,7 @@ export function Dashboard() {
       </div>
 
       {transferNotice && (
-        <div className="alert-banner" data-testid="transfer-notice">
+        <div className="alert-banner" data-testid="transfer-notice" role="status" aria-live="polite">
           {transferNotice}
         </div>
       )}
@@ -99,27 +102,28 @@ export function Dashboard() {
       <div className="panel-card">
         <div className="panel-header">
           <h3>Recent Transactions</h3>
-          {/* BUG 4 (Accessibility): Filter input missing accessible label or aria-label */}
+          {/* Fixed BUG 4: Added accessible label for filter input */}
           <input
             id="txn-filter-input"
             data-testid="txn-filter-input"
             type="text"
+            aria-label="Filter transactions by merchant"
             placeholder="Filter merchant..."
             className="text-input"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
           />
         </div>
-        <table className="data-table" data-testid="transactions-table">
+        <table className="data-table" data-testid="transactions-table" aria-label="Recent transactions table">
           <thead>
-            {/* BUG 5 (Visual/Layout): Clipped table headers due to constrained max-height */}
-            <tr style={{ maxHeight: '18px', overflow: 'hidden', display: 'flex' }}>
-              <th style={{ flex: 1 }}>Ref ID</th>
-              <th style={{ flex: 1 }}>Date</th>
-              <th style={{ flex: 2 }}>Description</th>
-              <th style={{ flex: 1 }}>Category</th>
-              <th style={{ flex: 1 }}>Status</th>
-              <th style={{ flex: 1 }}>Amount</th>
+            {/* Fixed BUG 5: Use standard table layout without clipping or flex */}
+            <tr>
+              <th scope="col">Ref ID</th>
+              <th scope="col">Date</th>
+              <th scope="col">Description</th>
+              <th scope="col">Category</th>
+              <th scope="col">Status</th>
+              <th scope="col">Amount</th>
             </tr>
           </thead>
           <tbody>

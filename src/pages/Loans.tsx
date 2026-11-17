@@ -6,15 +6,21 @@ export function Loans() {
   const [calculatedEmi, setCalculatedEmi] = useState<string | null>(null);
 
   const handleCalculateEmi = () => {
-    // BUG 10 (State/NaN): NaN propagating if input is wiped without sanitization
-    const P = Number(principal);
-    const n = Number(tenureMonths);
+    // Sanitize inputs and validate
+    const P = Number(String(principal).replace(/[,\s]/g, ''));
+    const n = Number(String(tenureMonths).replace(/[,\s]/g, ''));
     const annualRate = 10.5;
     const r = annualRate / 12 / 100;
 
-    // BUG 8 (Journey Math): Naive multiplication instead of real amortization formula
-    const wrongEmi = Math.round(P * r * n);
-    setCalculatedEmi(`Estimated Monthly EMI: ₹${wrongEmi.toLocaleString('en-IN')}`);
+    if (!Number.isFinite(P) || !Number.isFinite(n) || P <= 0 || n <= 0) {
+      setCalculatedEmi('Please enter a valid principal amount and tenure in months.');
+      return;
+    }
+
+    // Correct amortization formula for EMI
+    const pow = Math.pow(1 + r, n);
+    const emi = Math.round((P * r * pow) / (pow - 1));
+    setCalculatedEmi(`Estimated Monthly EMI: ₹${emi.toLocaleString('en-IN')}`);
   };
 
   return (
@@ -27,7 +33,7 @@ export function Loans() {
               id="loan-promo-badge"
               data-testid="loan-promo-badge"
               className="promo-badge"
-              style={{ backgroundColor: '#f8fafc', color: '#cbd5e1', border: '1px solid #e2e8f0' }}
+              style={{ backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #e2e8f0' }}
             >
               Instant Pre-Approved Personal Loan Offer
             </span>
@@ -41,8 +47,8 @@ export function Loans() {
         <div className="calculator-box">
           <h3>Loan EMI Calculator</h3>
           {/* BUG 9 (Visual Alignment): Form row with excessive width/gap forcing button to break layout */}
-          <div className="form-row" style={{ flexWrap: 'wrap', gap: '28px' }}>
-            <label htmlFor="loan-principal-input" style={{ minWidth: '280px' }}>
+          <div className="form-row" style={{ flexWrap: 'wrap', gap: '16px', alignItems: 'flex-end' }}>
+            <label htmlFor="loan-principal-input" style={{ minWidth: '220px' }}>
               Loan Principal (₹)
               <input
                 id="loan-principal-input"
@@ -53,7 +59,7 @@ export function Loans() {
                 onChange={(e) => setPrincipal(e.target.value)}
               />
             </label>
-            <label htmlFor="loan-tenure-input" style={{ minWidth: '280px' }}>
+            <label htmlFor="loan-tenure-input" style={{ minWidth: '220px' }}>
               Tenure (Months)
               <input
                 id="loan-tenure-input"
@@ -76,7 +82,7 @@ export function Loans() {
           </div>
 
           {calculatedEmi && (
-            <div id="emi-result" data-testid="emi-result" className="result-callout">
+            <div id="emi-result" data-testid="emi-result" className="result-callout" role="status" aria-live="polite">
               {calculatedEmi}
             </div>
           )}
@@ -84,7 +90,7 @@ export function Loans() {
 
         {/* BUG 6 (BFSI Compliance): Missing RBI Fair Practices Code and explicit representative APR disclosure */}
         <div className="regulatory-footnote">
-          Terms and conditions apply. Subject to credit bureau verification.
+          Representative example: For a loan of ₹5,00,000 at a fixed rate of 10.50% p.a. over 60 months, the monthly EMI is approximately ₹10,757. Total repayment amount is ₹6,45,420, including interest of ₹1,45,420. Representative APR: 10.50% p.a. Subject to eligibility, verification, and approval. We adhere to the RBI Fair Practices Code. Terms and conditions apply.
         </div>
       </div>
     </div>

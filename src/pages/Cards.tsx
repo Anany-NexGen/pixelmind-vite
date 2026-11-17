@@ -6,7 +6,7 @@ export function Cards() {
   // BUG 11 (Journey Functional): Dead click handler, state is never updated
   const handleFreezeToggle = () => {
     console.log("Card freeze requested for card 8842");
-    // Developer omitted setIsFrozen(!isFrozen)
+    setIsFrozen((prev) => !prev);
   };
 
   return (
@@ -20,8 +20,8 @@ export function Cards() {
 
           <div className="card-visual">
             <div className="card-chip" />
-            {/* BUG 13 (Accessibility): Card digits without aria-label or accessible text representation */}
-            <div className="card-number">•••• •••• •••• 8842</div>
+            {/* Fixed Accessibility: provide accessible label for card digits */}
+            <div className="card-number" aria-label="Card number ending in 8842" role="text">•••• •••• •••• 8842</div>
             <div className="card-footer">
               <span>MONKEY.D.LUFFY</span>
               <span>VALID THRU 08/29</span>
@@ -33,6 +33,8 @@ export function Cards() {
               id="freeze-card-btn"
               data-testid="freeze-card-btn"
               className="btn-primary"
+              type="button"
+              aria-pressed={isFrozen}
               onClick={handleFreezeToggle}
             >
               {isFrozen ? 'Unfreeze Card' : 'Freeze Card'}
@@ -45,14 +47,26 @@ export function Cards() {
 
         <div className="panel-card" data-testid="credit-score-widget">
           <h2>CIBIL Credit Health</h2>
-          {/* BUG 12 (Presence Zone Blank): Empty dark box rendered instead of gauge widget */}
+          {/* Fixed: Accessible credit score summary with meter */}
           <div
             style={{
               width: '100%',
-              height: '220px',
+              padding: '16px',
               backgroundColor: '#0f172a',
+              color: '#e5e7eb',
+              borderRadius: '8px',
             }}
-          />
+            aria-labelledby="cibil-score-title"
+          >
+            <div id="cibil-score-title" style={{fontWeight: 600, marginBottom: '8px'}}>Your CIBIL Score</div>
+            <div style={{display:'flex', alignItems:'center', gap:'12px'}}>
+              <meter min={300} max={900} low={580} high={750} optimum={800} value={780} aria-label="CIBIL score meter showing 780 out of 900" style={{width:'60%'}} />
+              <div>
+                <div style={{fontSize: '18px'}}>780 / 900</div>
+                <div style={{opacity: 0.85}}>Status: Excellent</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
