@@ -83,6 +83,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
   padding: 28px;
   border-radius: 12px;
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -97,8 +99,9 @@ body {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  background-color: #1d4ed8;
-  color: #ffffff;
+  background-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  border: 1px solid #1d4ed8 !important;
   margin-bottom: 8px;
 }
 
@@ -118,6 +121,8 @@ body {
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+  row-gap: 8px;
 }
 
 .btn-primary {
@@ -129,6 +134,7 @@ body {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .btn-secondary {
@@ -140,6 +146,7 @@ body {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .alert-banner,
@@ -320,5 +327,32 @@ body {
   font-size: 12px;
   color: #94a3b8;
   margin-top: 12px;
+}
+
+/* Accessibility: visible focus outlines for keyboard users */
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.nav-links a:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* Ensure table headers are visible and not suppressed by any overrides */
+.data-table thead {
+  display: table-header-group;
+}
+
+.data-table thead th {
+  background-color: #0f172a;
+  color: #e5e7eb;
+  font-weight: 700;
+}
+
+/* Improve responsiveness to prevent CTA overlap on small screens */
+@media (max-width: 640px) {
+  .hero-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 

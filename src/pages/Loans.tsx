@@ -6,15 +6,20 @@ export function Loans() {
   const [calculatedEmi, setCalculatedEmi] = useState<string | null>(null);
 
   const handleCalculateEmi = () => {
-    // BUG 10 (State/NaN): NaN propagating if input is wiped without sanitization
+    // Sanitize inputs and compute EMI using amortization formula
     const P = Number(principal);
     const n = Number(tenureMonths);
     const annualRate = 10.5;
     const r = annualRate / 12 / 100;
 
-    // BUG 8 (Journey Math): Naive multiplication instead of real amortization formula
-    const wrongEmi = Math.round(P * r * n);
-    setCalculatedEmi(`Estimated Monthly EMI: ₹${wrongEmi.toLocaleString('en-IN')}`);
+    if (!Number.isFinite(P) || !Number.isFinite(n) || P <= 0 || n <= 0) {
+      setCalculatedEmi('Please enter a valid principal and tenure.');
+      return;
+    }
+
+    const pow = Math.pow(1 + r, n);
+    const emi = Math.round((P * r * pow) / (pow - 1));
+    setCalculatedEmi(`Estimated Monthly EMI: ₹${emi.toLocaleString('en-IN')}`);
   };
 
   return (
@@ -27,22 +32,22 @@ export function Loans() {
               id="loan-promo-badge"
               data-testid="loan-promo-badge"
               className="promo-badge"
-              style={{ backgroundColor: '#f8fafc', color: '#cbd5e1', border: '1px solid #e2e8f0' }}
+              style={{ backgroundColor: '#1e40af', color: '#ffffff', border: '1px solid #1e3a8a' }}
             >
               Instant Pre-Approved Personal Loan Offer
             </span>
             <h1>Personal & Home Loans</h1>
             <p className="subtitle">
-              Flexible repayment tenures from 12 to 84 months at 10.50% nominal rate.
+              Flexible repayment tenures from 12 to 84 months. Representative APR 10.50%. No hidden charges; foreclosure as per policy.
             </p>
           </div>
         </div>
 
         <div className="calculator-box">
           <h3>Loan EMI Calculator</h3>
-          {/* BUG 9 (Visual Alignment): Form row with excessive width/gap forcing button to break layout */}
-          <div className="form-row" style={{ flexWrap: 'wrap', gap: '28px' }}>
-            <label htmlFor="loan-principal-input" style={{ minWidth: '280px' }}>
+          {/* Align form controls using CSS class without inline overrides to prevent layout shifts */}
+          <div className="form-row">
+            <label htmlFor="loan-principal-input">
               Loan Principal (₹)
               <input
                 id="loan-principal-input"
@@ -53,7 +58,7 @@ export function Loans() {
                 onChange={(e) => setPrincipal(e.target.value)}
               />
             </label>
-            <label htmlFor="loan-tenure-input" style={{ minWidth: '280px' }}>
+            <label htmlFor="loan-tenure-input">
               Tenure (Months)
               <input
                 id="loan-tenure-input"
@@ -68,7 +73,7 @@ export function Loans() {
               id="calc-emi-btn"
               data-testid="calc-emi-btn"
               className="btn-primary"
-              style={{ alignSelf: 'flex-end', marginTop: '14px' }}
+              type="button"
               onClick={handleCalculateEmi}
             >
               Calculate EMI
@@ -76,15 +81,15 @@ export function Loans() {
           </div>
 
           {calculatedEmi && (
-            <div id="emi-result" data-testid="emi-result" className="result-callout">
+            <div id="emi-result" data-testid="emi-result" className="result-callout" aria-live="polite" role="status">
               {calculatedEmi}
             </div>
           )}
         </div>
 
-        {/* BUG 6 (BFSI Compliance): Missing RBI Fair Practices Code and explicit representative APR disclosure */}
+        {/* Regulatory disclosure: RBI Fair Practices Code and representative APR */}
         <div className="regulatory-footnote">
-          Terms and conditions apply. Subject to credit bureau verification.
+          Representative APR: 10.50%. Example: Borrow ₹5,00,000 over 60 months at 10.50% p.a.; your monthly EMI will depend on eligibility. All loans are offered as per the RBI Fair Practices Code and are subject to verification. Please refer to our Fair Practices Code and Key Facts Statement.
         </div>
       </div>
     </div>
